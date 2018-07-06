@@ -3,8 +3,9 @@ import {TextInput, View, Button} from "react-native";
 import {fetchJSON} from "../network/Network";
 import {Conference, Speaker, Event} from "../realmDB";
 import {toRealmArray} from "../utils/Utils";
+import {connect} from 'react-redux'
 
-export default class AddConfScreen extends Component {
+class AddConfScreen extends Component {
   static navigationOptions = {
     title: 'New Conference'
   };
@@ -58,20 +59,21 @@ export default class AddConfScreen extends Component {
             speakers[j] = ids[speakers[j]]
           }
           events[i].speaker = toRealmArray(events[i].speaker);
-          Event.create(events[i])
+          Event.create(events[i]);
         }
       })
       .catch(error => {
         console.log(error)
       })
       .then(() => {
-        let confs = Conference.get();
-        let events = Event.get();
-        let speakers = Speaker.get();
-
-        console.log("CONFS: " + JSON.stringify(confs));
-        console.log("EVENTS: " + JSON.stringify(events));
-        console.log("SPEAKERS: " + JSON.stringify(speakers))
+        this.props.onAddConference()
       });
   }
 }
+
+export default connect(
+  null,
+  dispatch => ({
+    onAddConference: () => dispatch({type: 'UPDATE_CONFERENCES'})
+  })
+)(AddConfScreen)

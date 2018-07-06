@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
 import {HomeScreen, AddConfScreen} from './screen';
 import {createStackNavigator} from 'react-navigation';
-import { Provider } from "react-redux";
-import { createStore, applyMiddleware } from "redux";
+import combineReducers from './reducers';
+import {Provider} from "react-redux";
+import {createStore, applyMiddleware} from "redux";
 import thunk from 'redux-thunk';
-import { composeWithDevTools }from "redux-devtools-extension"
+import {composeWithDevTools} from "redux-devtools-extension";
+import {size, color} from './Constants';
+
+const store = createStore(combineReducers, composeWithDevTools(applyMiddleware(thunk)));
 
 const NavigationStack = createStackNavigator({
   Home: HomeScreen,
@@ -13,16 +17,20 @@ const NavigationStack = createStackNavigator({
   initialRouteName: 'Home',
   navigationOptions: {
     headerStyle: {
-      backgroundColor: '#1E90FF'
+      backgroundColor: color.BASE_YELLOW_LIGHT
     },
-    headerTintColor:'#FFF'
+    headerTintColor: color.BASE_BLUE
   }
 });
 
 export default class App extends Component {
 
   render() {
-    return <NavigationStack/>;
+    return (
+      <Provider store={store}>
+        <NavigationStack/>
+      </Provider>
+    );
   }
 }
 
